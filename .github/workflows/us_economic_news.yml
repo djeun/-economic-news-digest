@@ -1,0 +1,44 @@
+name: 매일 미국 경제 뉴스 브리핑
+
+on:
+  schedule:
+    - cron: "0 15 * * *"   # 08:00 PDT (UTC-7, 서머타임 기간)
+    - cron: "0 16 * * *"   # 08:00 PST (UTC-8, 동절기)
+  workflow_dispatch:
+
+jobs:
+  # ── 1. PT 기준 08:00인지 확인 ──────────────────────────────────────────────
+  check-time:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: PT 현재 시각 확인
+        id: check
+        run: |
+          PT_HOUR=$(TZ="America/Los_Angeles" date +"%H")
+          echo "현재 PT 시각: ${PT_HOUR}시"
+          if [ "$PT_HOUR" = "08" ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
+  # ── 2. 08:00 PT일 때만 실행 ────────────────────────────────────────────────
+  send-briefing:
+    needs: check-time
+    if: needs.check-time.outputs.should_run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: pip install -r requirements.txt
+      - run: python jobs/us_economic_news/main.py
+        env:
+          GEMINI_API_KEY:     ${{ secrets.GEMINI_API_KEY }}
+          GMAIL_USER:         ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          RECIPIENT_EMAIL:    ${{ secrets.RECIPIENT_EMAIL }}
