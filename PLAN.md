@@ -31,7 +31,7 @@
 
 - [x] 글로벌 테크 뉴스 브리핑 (`jobs/tech_news/`)
   - Hacker News Top Stories RSS 활용
-- [ ] GitHub 트렌딩 레포 요약 (`jobs/github_trending/`)
+- [x] GitHub 트렌딩 레포 요약 (`jobs/github_trending/`)
   - GitHub Trending 페이지 스크래핑
 
 ## Phase 3 — 안정화
