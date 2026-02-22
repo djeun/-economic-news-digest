@@ -25,7 +25,7 @@
 - [x] `shared/email_sender.py` — Gmail SMTP 헬퍼 분리
 - [x] `shared/ai_client.py` — Gemini API 헬퍼 분리
 - [x] `shared/rss_fetcher.py` — RSS 파싱 헬퍼 분리
-- [ ] `requirements.txt` 최종 정리
+- [x] `requirements.txt` 최종 정리
 
 ## Phase 2 — 자동화 job 추가
 
