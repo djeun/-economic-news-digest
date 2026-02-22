@@ -1,10 +1,10 @@
-"""미국 경제 뉴스 브리핑 — 매일 08:00 PST 이메일 발송."""
+"""US economic news briefing — sends email daily at 08:00 PST."""
 import os
 import sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-# 프로젝트 루트를 import 경로에 추가
+# Add project root to import path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 from shared.rss_fetcher import fetch_feeds
@@ -110,17 +110,17 @@ def notify(summary_html: str, articles: list[dict]) -> None:
 
 
 def main():
-    print("📡 RSS 뉴스 수집 중...")
+    print("Fetching RSS news...")
     articles = fetch_data()
     if not articles:
-        print("❌ 수집된 뉴스가 없습니다.")
+        print("[ERROR] No articles collected.")
         return
-    print(f"   {len(articles)}건 수집 완료")
+    print(f"  {len(articles)} articles collected")
 
-    print("🤖 Gemini AI로 요약 생성 중...")
+    print("Generating summary with Gemini AI...")
     summary_html = process(articles)
 
-    print("📧 이메일 발송 중...")
+    print("Sending email...")
     notify(summary_html, articles)
 
 

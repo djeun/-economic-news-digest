@@ -1,49 +1,48 @@
-# PLAN.md — 전체 작업 계획
+# PLAN.md — Task Plan
 
-에이전트가 작업을 시작하기 전에 이 파일을 읽고,
-완료된 항목은 PROGRESS.md에 기록한다.
-
----
-
-## 목표
-
-반복적인 정보 수집·요약·알림 작업을 자동화하는 허브 구축.
-완전 무료 서비스만 사용. GitHub Actions로 스케줄 관리.
+Agents must read this file before starting work and mark completed items here.
 
 ---
 
-## Phase 1 — 프로젝트 기반 정비
+## Goal
 
-- [x] 미국 경제 뉴스 브리핑 스크립트 작성 (`main.py`)
-- [x] GitHub Actions 워크플로 작성 (`daily_news.yml`)
-- [x] CLAUDE.md 작성 (프로젝트 규칙·패턴 문서화)
-- [x] PLAN.md / PROGRESS.md 도입
-- [x] 폴더 구조 리팩터링
+Build an automation hub for repetitive information gathering, summarizing, and alerting.
+Use only completely free services. Manage schedules via GitHub Actions.
+
+---
+
+## Phase 1 — Project Foundation
+
+- [x] Write US economic news briefing script (`main.py`)
+- [x] Write GitHub Actions workflow (`daily_news.yml`)
+- [x] Write CLAUDE.md (project rules and patterns)
+- [x] Introduce PLAN.md / PROGRESS.md
+- [x] Refactor folder structure
   - `main.py` → `jobs/us_economic_news/main.py`
   - `daily_news.yml` → `.github/workflows/us_economic_news.yml`
-  - `shared/` 폴더 생성 (공통 유틸리티)
-- [x] `shared/email_sender.py` — Gmail SMTP 헬퍼 분리
-- [x] `shared/ai_client.py` — Gemini API 헬퍼 분리
-- [x] `shared/rss_fetcher.py` — RSS 파싱 헬퍼 분리
-- [x] `requirements.txt` 최종 정리
+  - Create `shared/` folder for common utilities
+- [x] `shared/email_sender.py` — extract Gmail SMTP helper
+- [x] `shared/ai_client.py` — extract Gemini API helper
+- [x] `shared/rss_fetcher.py` — extract RSS parsing helper
+- [x] `requirements.txt` final cleanup
 
-## Phase 2 — 자동화 job 추가
+## Phase 2 — Add Automation Jobs
 
-- [x] 글로벌 테크 뉴스 브리핑 (`jobs/tech_news/`)
-  - Hacker News Top Stories RSS 활용
-- [x] GitHub 트렌딩 레포 요약 (`jobs/github_trending/`)
-  - GitHub Trending 페이지 스크래핑
+- [x] Global tech news briefing (`jobs/tech_news/`)
+  - Hacker News, TechCrunch, The Verge RSS
+- [x] GitHub trending repos summary (`jobs/github_trending/`)
+  - Scrape GitHub Trending page
 
-## Phase 3 — 안정화
+## Phase 3 — Stabilization
 
-- [x] 각 job별 에러 처리 강화 (뉴스 수집 실패 시 재시도)
-- [x] 이메일 발송 실패 시 로그 남기기
-- [x] README.md 작성 (외부 공개용 설명)
+- [x] Strengthen error handling per job (retry on fetch failure)
+- [x] Log email send failures
+- [x] Write README.md (public-facing documentation)
 
 ---
 
-## 작업 규칙
+## Work Rules
 
-- 한 에이전트는 한 번에 하나의 `[ ]` 항목만 담당한다.
-- 작업 시작 전 PROGRESS.md의 `진행 중` 섹션에 자신이 맡은 항목을 기록한다.
-- 작업 완료 후 이 파일의 `[ ]`를 `[x]`로 변경하고, PROGRESS.md를 업데이트한다.
+- One agent handles one `[ ]` item at a time.
+- Before starting, add the item to the `In Progress` section of PROGRESS.md.
+- After finishing, change `[ ]` to `[x]` here and update PROGRESS.md.

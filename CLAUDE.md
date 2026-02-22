@@ -1,118 +1,121 @@
-# 자동화 허브 (Automation Hub)
+# Automation Hub
 
-이 프로젝트는 반복적인 정보 수집·요약·알림 작업을 자동화하는 허브입니다.
-GitHub Actions로 스케줄을 관리하고, 무료 서비스만 사용합니다.
-
----
-
-## 에이전트 협업 규칙
-
-여러 에이전트가 작업을 나눠 진행할 때 아래 두 파일로 상태를 관리한다.
-
-### PLAN.md — 무엇을 해야 하는가
-
-- 전체 작업을 Phase별로 정리한 목록
-- `[ ]` = 미완료, `[x]` = 완료
-- 에이전트는 **작업 시작 전** 반드시 읽는다
-- 작업 완료 후 해당 항목을 `[x]`로 변경한다
-
-### PROGRESS.md — 지금 어디까지 됐는가
-
-- **진행 중**: 현재 어떤 에이전트가 무엇을 하고 있는지
-- **완료**: 끝난 작업 목록
-- **대기 중**: 다음으로 할 작업
-- **블로커**: 막힌 이슈
-
-### 작업 시작 시 순서
-
-1. `PLAN.md` 읽기 → 맡을 `[ ]` 항목 선택
-2. `PROGRESS.md`의 `진행 중` 섹션에 추가
-3. 작업 수행
-4. `PLAN.md`의 `[ ]` → `[x]` 변경
-5. `PROGRESS.md` 업데이트 (진행 중 → 완료)
+This project automates repetitive information gathering, summarizing, and notification tasks.
+Schedules are managed via GitHub Actions. Only free services are used.
 
 ---
 
-## 핵심 원칙: 완전 무료
+## Agent Collaboration Rules
 
-**아무리 소액이라도 유료 서비스는 사용하지 않습니다.**
-새 자동화를 추가할 때 반드시 아래 승인 목록에서만 선택하세요.
+When multiple agents share work, use the following two files to track state.
 
-### 승인된 무료 서비스 목록
+### PLAN.md — What needs to be done
 
-| 역할 | 서비스 | 제한 |
-|------|--------|------|
-| AI 요약·생성 | Google Gemini 2.5 Flash | 250건/일, 10건/분 |
-| 뉴스·데이터 수집 | RSS 피드 (CNBC, MarketWatch, Google News 등) | 제한 없음 |
-| 이메일 발송 | Gmail SMTP (앱 비밀번호) | 하루 500건 |
-| 스케줄 실행 | GitHub Actions | 월 2,000분 (private repo) |
-| 코드 저장 | GitHub | 무료 |
+- Full task list organized by Phase
+- `[ ]` = pending, `[x]` = complete
+- Agents **must read this before starting** any task
+- Mark items `[x]` after completion
 
-### 사용 금지 서비스 (유료)
+### PROGRESS.md — Current status
+
+- **In progress**: which agent is doing what
+- **Completed**: finished tasks
+- **Waiting**: next tasks in queue
+- **Blockers**: issues blocking progress
+
+### Workflow for starting a task
+
+1. Read `PLAN.md` → pick an unchecked `[ ]` item
+2. Add it to the `In Progress` section of `PROGRESS.md`
+3. Do the work
+4. Change `[ ]` → `[x]` in `PLAN.md`
+5. Update `PROGRESS.md` (move from In Progress → Completed)
+
+---
+
+## Core Principle: Completely Free
+
+**No paid services, no matter how cheap.**
+When adding new automation, choose only from the approved list below.
+
+### Approved Free Services
+
+| Role | Service | Limit |
+|------|---------|-------|
+| AI summarization | Google Gemini 2.5 Flash | 250 req/day, 10 req/min |
+| News & data | RSS feeds (CNBC, MarketWatch, Google News, etc.) | Unlimited |
+| Email delivery | Gmail SMTP (App Password) | 500/day |
+| Scheduling | GitHub Actions | 2,000 min/month (private repo) |
+| Code hosting | GitHub | Free |
+
+### Banned Services (Paid)
 
 - Anthropic / Claude API
 - OpenAI API
-- NewsAPI.org (무료 플랜도 상업적 제한 있음)
-- SendGrid, Mailgun 등 유료 이메일 서비스
-- AWS, GCP, Azure 유료 기능
+- NewsAPI.org (commercial restrictions even on free plan)
+- SendGrid, Mailgun, or other paid email services
+- AWS, GCP, Azure paid features
 
 ---
 
-## 프로젝트 구조
+## Project Structure
 
 ```
 .
-├── CLAUDE.md                        # 이 파일
-├── requirements.txt                 # 전체 공통 의존성
-├── .env.example                     # 환경변수 템플릿
+├── CLAUDE.md                        # This file
+├── requirements.txt                 # Shared dependencies
+├── .env.example                     # Environment variable template
 ├── .gitignore
 │
-├── jobs/                            # 자동화 작업별 폴더
-│   └── us_economic_news/
-│       └── main.py                  # 미국 경제 뉴스 브리핑
+├── jobs/                            # One folder per automation job
+│   ├── us_economic_news/
+│   │   └── main.py                  # US economic news briefing
+│   ├── tech_news/
+│   │   └── main.py                  # Global tech news briefing
+│   └── github_trending/
+│       └── main.py                  # GitHub trending repos briefing
 │
-├── shared/                          # 재사용 유틸리티
-│   ├── email_sender.py              # Gmail SMTP 발송 헬퍼
-│   ├── ai_client.py                 # Gemini API 헬퍼
-│   └── rss_fetcher.py               # RSS 파싱 헬퍼
+├── shared/                          # Reusable utilities
+│   ├── email_sender.py              # Gmail SMTP helper
+│   ├── ai_client.py                 # Gemini API helper
+│   └── rss_fetcher.py               # RSS parsing helper
 │
 └── .github/
-    └── workflows/                   # 각 job의 실행 스케줄
-        └── us_economic_news.yml
+    └── workflows/                   # Cron schedules per job
+        ├── us_economic_news.yml
+        ├── tech_news.yml
+        └── github_trending.yml
 ```
-
-> **현재 상태**: `jobs/`와 `shared/` 폴더는 리팩터링 예정.
-> 지금은 `main.py`가 루트에 있음.
 
 ---
 
-## 새 자동화 추가 방법
+## Adding a New Automation
 
-1개의 자동화 = 1개의 job 폴더 + 1개의 workflow 파일.
+1 automation = 1 job folder + 1 workflow file.
 
-### 1단계 — job 폴더 생성
+### Step 1 — Create the job folder
 
 ```
 jobs/{job_name}/
 └── main.py
 ```
 
-`main.py` 필수 구조:
+Required structure for `main.py`:
 
 ```python
 import os
-# 환경변수는 항상 os.environ으로만 읽기 (하드코딩 금지)
+# Always read env vars via os.environ — never hardcode values
 
 def fetch_data() -> list:
-    """데이터 수집 단계"""
+    """Data collection step."""
     ...
 
 def process(data: list) -> str:
-    """AI 처리 또는 가공 단계"""
+    """AI processing or transformation step."""
     ...
 
 def notify(content: str) -> None:
-    """알림 발송 단계 (이메일 등)"""
+    """Notification step (email, etc.)."""
     ...
 
 def main():
@@ -124,20 +127,38 @@ if __name__ == "__main__":
     main()
 ```
 
-### 2단계 — workflow 파일 생성
+### Step 2 — Create the workflow file
 
-`.github/workflows/{job_name}.yml` 템플릿:
+Template for `.github/workflows/{job_name}.yml`:
 
 ```yaml
-name: {작업 이름}
+name: {Job Name}
 
 on:
   schedule:
-    - cron: "0 23 * * *"   # 매일 08:00 KST
-  workflow_dispatch:         # 수동 실행 허용
+    - cron: "0 15 * * *"   # 08:00 PDT (UTC-7)
+    - cron: "0 16 * * *"   # 08:00 PST (UTC-8)
+  workflow_dispatch:
 
 jobs:
-  run:
+  check-time:
+    runs-on: ubuntu-latest
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
+    steps:
+      - name: Check current PT hour
+        id: check
+        run: |
+          PT_HOUR=$(TZ="America/Los_Angeles" date +"%H")
+          if [ "$PT_HOUR" = "08" ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
+  send-briefing:
+    needs: check-time
+    if: needs.check-time.outputs.should_run == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -152,43 +173,42 @@ jobs:
           GMAIL_USER:         ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           RECIPIENT_EMAIL:    ${{ secrets.RECIPIENT_EMAIL }}
-          # job 전용 환경변수 추가 가능
 ```
 
-### 3단계 — GitHub Secrets 등록
+### Step 3 — Register GitHub Secrets
 
-**Settings → Secrets and variables → Actions**에 등록.
-공통 Secret은 이미 있으면 재사용, job 전용 값만 추가.
-
----
-
-## 환경변수 규칙
-
-| 변수명 | 설명 | 공통 여부 |
-|--------|------|-----------|
-| `GEMINI_API_KEY` | Google AI Studio API 키 | 공통 |
-| `GMAIL_USER` | 발송자 Gmail 주소 | 공통 |
-| `GMAIL_APP_PASSWORD` | Gmail 앱 비밀번호 | 공통 |
-| `RECIPIENT_EMAIL` | 수신자 이메일 | 공통 |
-
-- 새 job에 필요한 변수는 `{JOB_NAME}_{변수명}` 형식으로 추가 (예: `WEATHER_CITY`)
-- `.env.example`에 반드시 추가 (값 없이 키만)
-- `.env` 파일은 `.gitignore`에 포함 — 절대 커밋하지 않음
+Go to **Settings → Secrets and variables → Actions**.
+Reuse existing shared secrets; only add job-specific values.
 
 ---
 
-## 기술 스택
+## Environment Variables
 
-- **언어**: Python 3.12
-- **AI**: `google-generativeai` (Gemini 2.5 Flash)
-- **RSS 파싱**: `feedparser`
-- **이메일**: `smtplib` (표준 라이브러리)
-- **HTTP**: `requests`
-- **스케줄**: GitHub Actions cron
+| Variable | Description | Shared |
+|----------|-------------|--------|
+| `GEMINI_API_KEY` | Google AI Studio API key | Yes |
+| `GMAIL_USER` | Sender Gmail address | Yes |
+| `GMAIL_APP_PASSWORD` | Gmail App Password | Yes |
+| `RECIPIENT_EMAIL` | Recipient email(s) | Yes |
+
+- Job-specific variables should follow the format `{JOB_NAME}_{VAR_NAME}` (e.g., `WEATHER_CITY`)
+- Always add new variables to `.env.example` (key only, no value)
+- `.env` is in `.gitignore` — never commit it
 
 ---
 
-## Gemini API 사용 패턴
+## Tech Stack
+
+- **Language**: Python 3.12
+- **AI**: `google-genai` (Gemini 2.5 Flash)
+- **RSS parsing**: `feedparser`
+- **Scraping**: `requests` + `beautifulsoup4`
+- **Email**: `smtplib` (standard library)
+- **Scheduling**: GitHub Actions cron
+
+---
+
+## Gemini API Pattern
 
 ```python
 import google.generativeai as genai
@@ -199,13 +219,13 @@ response = model.generate_content(prompt)
 text = response.text
 ```
 
-- 모델은 항상 `gemini-2.5-flash` 사용 (무료 티어 한도 내)
-- 프롬프트는 한국어로 작성, 출력도 한국어 요청
-- 하루 작업당 Gemini 호출은 1~2회로 유지
+- Always use `gemini-2.5-flash` (within free tier limits)
+- Write prompts in Korean; request Korean output
+- Keep Gemini calls to 1–2 per job per day
 
 ---
 
-## 이메일 발송 패턴
+## Email Pattern
 
 ```python
 import smtplib
@@ -226,36 +246,36 @@ def send_email(subject: str, html_body: str) -> None:
 
 ---
 
-## 로컬 테스트 방법
+## Local Testing
 
 ```bash
-# 1. 가상환경 생성 및 의존성 설치
+# 1. Create virtualenv and install dependencies
 python -m venv .venv
 source .venv/Scripts/activate   # Windows
 pip install -r requirements.txt
 
-# 2. 환경변수 설정 (.env 파일 직접 작성 후)
-set -a && source .env && set +a  # bash
-# 또는 PowerShell:
-# Get-Content .env | ForEach-Object { $k,$v = $_ -split '=',2; [System.Environment]::SetEnvironmentVariable($k,$v) }
+# 2. Set environment variables
+cp .env.example .env
+# Fill in your values, then:
+set -a && source .env && set +a
 
-# 3. 실행
-python main.py                  # 현재 루트 job
-python jobs/{job_name}/main.py  # 특정 job
+# 3. Run
+python jobs/us_economic_news/main.py
+python jobs/tech_news/main.py
+python jobs/github_trending/main.py
 ```
 
-GitHub Actions에서 수동 실행하려면:
-**Actions 탭 → 워크플로 선택 → Run workflow**
+To trigger manually on GitHub Actions:
+**Actions tab → select workflow → Run workflow**
 
 ---
 
-## 자동화 아이디어 목록
+## Automation Ideas
 
-추후 추가 가능한 자동화 예시:
+Future jobs to consider:
 
-- [ ] 환율 일일 브리핑 (원/달러, 원/엔)
-- [ ] 주요 주식 시황 요약
-- [ ] 날씨 주간 예보
-- [ ] 특정 키워드 뉴스 모니터링
-- [ ] 유튜브 채널 새 영상 알림
-- [ ] GitHub 스타 트렌딩 레포 요약
+- [ ] Exchange rate briefing (KRW/USD, KRW/JPY)
+- [ ] Stock market summary
+- [ ] Weekly weather forecast
+- [ ] Keyword news monitoring
+- [ ] YouTube channel new video alerts

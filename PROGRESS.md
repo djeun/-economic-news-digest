@@ -1,61 +1,66 @@
-# PROGRESS.md — 진행 상황
+# PROGRESS.md — Current Status
 
-에이전트가 작업을 시작·완료할 때 이 파일을 업데이트한다.
-
----
-
-## 진행 중
-
-_현재 진행 중인 작업 없음_
-
-<!-- 작업을 시작하면 아래 형식으로 추가:
-- [ ] {작업 내용} — {에이전트 또는 세션 식별자}, 시작: {날짜}
--->
+Agents update this file when starting or completing tasks.
 
 ---
 
-## 완료
+## In Progress
 
-- [x] 미국 경제 뉴스 브리핑 `main.py` 작성
-  - RSS 피드 3개 (CNBC, MarketWatch, Google News) 수집
-  - Gemini 1.5 Flash로 한국어 요약
-  - Gmail SMTP 이메일 발송
-- [x] GitHub Actions 워크플로 작성 (매일 08:00 KST)
-- [x] CLAUDE.md 작성 — 프로젝트 규칙, 무료 서비스 목록, 코드 패턴
-- [x] PLAN.md / PROGRESS.md 도입
-- [x] 폴더 구조 리팩터링
+_No tasks currently in progress._
+
+---
+
+## Completed
+
+- [x] US economic news briefing `main.py`
+  - 3 RSS feeds (CNBC, MarketWatch, Google News)
+  - Korean summary via Gemini 2.5 Flash
+  - Gmail SMTP email delivery
+- [x] GitHub Actions workflow (daily 08:00 PST)
+- [x] CLAUDE.md — project rules, approved free services, code patterns
+- [x] PLAN.md / PROGRESS.md introduced
+- [x] Folder structure refactored
   - `main.py` → `jobs/us_economic_news/main.py`
   - `daily_news.yml` → `.github/workflows/us_economic_news.yml`
-  - `shared/rss_fetcher.py`, `shared/ai_client.py`, `shared/email_sender.py` 분리
-- [x] 글로벌 테크 뉴스 브리핑 (`jobs/tech_news/main.py`)
-  - RSS 피드 3개 (Hacker News, TechCrunch, The Verge) 수집
-  - Gemini 2.5 Flash로 한국어 요약 (개발자 포인트 섹션 포함)
-  - GitHub Actions 워크플로 작성 (`tech_news.yml`, 매일 08:00 KST)
+  - `shared/rss_fetcher.py`, `shared/ai_client.py`, `shared/email_sender.py` extracted
+- [x] Global tech news briefing (`jobs/tech_news/main.py`)
+  - 3 RSS feeds (Hacker News, TechCrunch, The Verge)
+  - Korean summary with developer insights section
+  - GitHub Actions workflow (`tech_news.yml`, daily 08:00 PST)
+- [x] GitHub trending repos briefing (`jobs/github_trending/main.py`)
+  - Scrapes GitHub Trending page (top 15 repos)
+  - Korean summary with developer insights
+  - GitHub Actions workflow (`github_trending.yml`, daily 08:00 PST)
+- [x] Error handling strengthened
+  - Gemini API: retry up to 3 times (10s interval)
+  - Email send: retry up to 3 times (5s interval) + error logging
+  - RSS feeds: retry per feed up to 3 times, skip on final failure
+  - GitHub Trending scrape: retry up to 3 times
+- [x] README.md written
 
 ---
 
-## 대기 중 (다음 작업)
+## Waiting (Next Tasks)
 
-PLAN.md Phase 1 남은 항목:
-
-1. **`requirements.txt` 최종 정리** — 현재 패키지 버전 고정
-
-이후 Phase 2 (새 job 추가):
-- GitHub 트렌딩
+_All Phase 1–3 tasks complete. See CLAUDE.md for future automation ideas._
 
 ---
 
-## 블로커 / 이슈
+## Blockers / Issues
 
-_현재 없음_
+_None._
 
 ---
 
-## 변경 이력
+## Change Log
 
-| 날짜 | 내용 |
-|------|------|
-| 2026-02-21 | 프로젝트 초기 셋업. main.py, GitHub Actions, CLAUDE.md 완성 |
-| 2026-02-21 | PLAN.md / PROGRESS.md 도입 |
-| 2026-02-21 | 폴더 구조 리팩터링 완료. shared/ 분리, jobs/ 구조 적용 |
-| 2026-02-21 | 글로벌 테크 뉴스 브리핑 완료. jobs/tech_news/main.py + tech_news.yml 작성 |
+| Date | Description |
+|------|-------------|
+| 2026-02-21 | Initial project setup. main.py, GitHub Actions, CLAUDE.md complete |
+| 2026-02-21 | PLAN.md / PROGRESS.md introduced |
+| 2026-02-21 | Folder structure refactored. shared/ extracted, jobs/ structure applied |
+| 2026-02-22 | Global tech news briefing complete. jobs/tech_news/main.py + tech_news.yml |
+| 2026-02-22 | GitHub trending briefing complete. jobs/github_trending/main.py + github_trending.yml |
+| 2026-02-22 | Error handling strengthened across all jobs and shared utilities |
+| 2026-02-22 | README.md written |
+| 2026-02-22 | All code and documentation converted to English |

@@ -1,4 +1,4 @@
-"""GitHub 트렌딩 레포 브리핑 — 매일 08:00 PST 이메일 발송."""
+"""GitHub trending repositories briefing — sends email daily at 08:00 PST."""
 import os
 import sys
 import time
@@ -7,18 +7,18 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-_MAX_RETRIES = 3
-_RETRY_DELAY = 5  # seconds
-
-# 프로젝트 루트를 import 경로에 추가
+# Add project root to import path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
 from shared.ai_client import summarize
 from shared.email_sender import send_html_email
 
+_MAX_RETRIES = 3
+_RETRY_DELAY = 5  # seconds
+
 
 def fetch_data() -> list[dict]:
-    """GitHub Trending 페이지에서 오늘의 트렌딩 레포를 스크래핑합니다. 실패 시 최대 3회 재시도합니다."""
+    """Scrape today's trending repositories from GitHub Trending. Retries up to 3 times on failure."""
     url = "https://github.com/trending"
     headers = {"User-Agent": "Mozilla/5.0 (compatible; news-digest-bot/1.0)"}
 
@@ -30,17 +30,17 @@ def fetch_data() -> list[dict]:
             break
         except Exception as e:
             last_error = e
-            print(f"⚠️  GitHub Trending 요청 오류 (시도 {attempt}/{_MAX_RETRIES}): {e}")
+            print(f"[WARN] GitHub Trending request error (attempt {attempt}/{_MAX_RETRIES}): {e}")
             if attempt < _MAX_RETRIES:
                 time.sleep(_RETRY_DELAY)
     else:
-        raise RuntimeError(f"GitHub Trending 수집 {_MAX_RETRIES}회 모두 실패: {last_error}")
+        raise RuntimeError(f"GitHub Trending failed after {_MAX_RETRIES} attempts: {last_error}")
 
     soup = BeautifulSoup(response.text, "html.parser")
     repos = []
 
     for article in soup.select("article.Box-row"):
-        # 이름 & URL
+        # Name & URL
         link_el = article.select_one("h2 a")
         if not link_el:
             continue
@@ -48,19 +48,19 @@ def fetch_data() -> list[dict]:
         full_name = "/".join(parts)
         url_repo = "https://github.com" + link_el["href"].strip()
 
-        # 설명
+        # Description
         desc_el = article.select_one("p")
         description = desc_el.get_text(strip=True) if desc_el else ""
 
-        # 언어
+        # Language
         lang_el = article.select_one("[itemprop='programmingLanguage']")
         language = lang_el.get_text(strip=True) if lang_el else ""
 
-        # 전체 스타
+        # Total stars
         star_el = article.select_one("a[href$='/stargazers']")
         total_stars = star_el.get_text(strip=True) if star_el else ""
 
-        # 오늘 스타
+        # Stars today
         today_el = article.select_one("span.d-inline-block.float-sm-right")
         stars_today = today_el.get_text(strip=True) if today_el else ""
 
@@ -169,17 +169,17 @@ def notify(summary_html: str, repos: list[dict]) -> None:
 
 
 def main():
-    print("📡 GitHub Trending 스크래핑 중...")
+    print("Scraping GitHub Trending...")
     repos = fetch_data()
     if not repos:
-        print("❌ 수집된 레포가 없습니다.")
+        print("[ERROR] No repositories collected.")
         return
-    print(f"   {len(repos)}개 수집 완료")
+    print(f"  {len(repos)} repositories collected")
 
-    print("🤖 Gemini AI로 요약 생성 중...")
+    print("Generating summary with Gemini AI...")
     summary_html = process(repos)
 
-    print("📧 이메일 발송 중...")
+    print("Sending email...")
     notify(summary_html, repos)
 
 

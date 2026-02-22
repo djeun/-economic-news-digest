@@ -1,4 +1,4 @@
-"""공통 RSS 피드 수집 유틸리티."""
+"""Shared RSS feed fetching utility."""
 import re
 import time
 import feedparser
@@ -8,7 +8,7 @@ _RETRY_DELAY = 5  # seconds
 
 
 def fetch_feeds(urls: list[str], max_per_feed: int = 6, max_total: int = 15) -> list[dict]:
-    """여러 RSS 피드에서 항목을 수집해 중복 제거 후 반환합니다. 피드별 최대 3회 재시도합니다."""
+    """Fetch items from multiple RSS feeds, deduplicate, and return a flat list. Retries each feed up to 3 times."""
     items = []
     seen = set()
 
@@ -31,23 +31,22 @@ def fetch_feeds(urls: list[str], max_per_feed: int = 6, max_total: int = 15) -> 
 
 
 def _fetch_with_retry(url: str) -> list:
-    """단일 RSS 피드를 최대 3회 재시도하며 파싱합니다."""
+    """Parse a single RSS feed with up to 3 retries. Returns an empty list on final failure."""
     last_error = None
     for attempt in range(1, _MAX_RETRIES + 1):
         try:
             feed = feedparser.parse(url)
             if feed.bozo and not feed.entries:
-                raise ValueError(f"피드 파싱 실패: {feed.bozo_exception}")
-            # 각 entry에 source 정보 추가
+                raise ValueError(f"Feed parse failed: {feed.bozo_exception}")
             source = feed.feed.get("title", "Unknown")
             for entry in feed.entries:
                 entry["_source"] = source
             return feed.entries
         except Exception as e:
             last_error = e
-            print(f"⚠️  피드 오류 ({url}) 시도 {attempt}/{_MAX_RETRIES}: {e}")
+            print(f"[WARN] Feed error ({url}) attempt {attempt}/{_MAX_RETRIES}: {e}")
             if attempt < _MAX_RETRIES:
                 time.sleep(_RETRY_DELAY)
 
-    print(f"❌ 피드 수집 최종 실패, 건너뜀: {url}")
+    print(f"[ERROR] Feed permanently failed, skipping: {url}")
     return []
