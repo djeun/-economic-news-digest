@@ -39,6 +39,12 @@ Use only completely free services. Manage schedules via GitHub Actions.
 - [x] Log email send failures
 - [x] Write README.md (public-facing documentation)
 
+## Phase 4 — Orchestration
+
+- [x] Create `orchestrator.py` — runs all 3 jobs in parallel (fetch + AI summarize), sends all 3 emails simultaneously once every job is ready
+- [x] Replace 3 separate workflows with single `daily_briefing.yml`
+- [x] Remove `us_economic_news.yml`, `tech_news.yml`, `github_trending.yml`
+
 ---
 
 ## Work Rules

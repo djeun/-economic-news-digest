@@ -37,6 +37,10 @@ _No tasks currently in progress._
   - RSS feeds: retry per feed up to 3 times, skip on final failure
   - GitHub Trending scrape: retry up to 3 times
 - [x] README.md written
+- [x] Orchestrator added (`orchestrator.py`)
+  - All 3 jobs run in parallel (fetch + AI summarize)
+  - Emails sent simultaneously once all jobs are ready
+  - 3 separate workflows replaced by single `daily_briefing.yml`
 
 ---
 
@@ -64,3 +68,4 @@ _None._
 | 2026-02-22 | Error handling strengthened across all jobs and shared utilities |
 | 2026-02-22 | README.md written |
 | 2026-02-22 | All code and documentation converted to English |
+| 2026-02-22 | Phase 4 complete: orchestrator.py + daily_briefing.yml (3 workflows → 1) |
