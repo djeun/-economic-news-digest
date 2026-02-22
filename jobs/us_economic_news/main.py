@@ -1,7 +1,8 @@
-"""미국 경제 뉴스 브리핑 — 매일 08:00 KST 이메일 발송."""
+"""미국 경제 뉴스 브리핑 — 매일 08:00 PST 이메일 발송."""
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # 프로젝트 루트를 import 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
@@ -22,7 +23,7 @@ def fetch_data() -> list[dict]:
 
 
 def process(articles: list[dict]) -> str:
-    today = datetime.now(timezone.utc).strftime("%Y년 %m월 %d일")
+    today = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y년 %m월 %d일")
     news_text = "\n\n".join(
         f"[{i+1}] {a['title']}\n출처: {a['source']}\n내용: {a['summary']}"
         for i, a in enumerate(articles)
@@ -47,8 +48,8 @@ def process(articles: list[dict]) -> str:
 
 
 def notify(summary_html: str, articles: list[dict]) -> None:
-    today = datetime.now(timezone.utc).strftime("%Y년 %m월 %d일")
-    mmdd  = datetime.now(timezone.utc).strftime("%m/%d")
+    today = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%Y년 %m월 %d일")
+    mmdd  = datetime.now(ZoneInfo("America/Los_Angeles")).strftime("%m/%d")
 
     links_html = "".join(
         f'<li><a href="{a["url"]}" style="color:#1a73e8;">{a["title"]}</a>'
