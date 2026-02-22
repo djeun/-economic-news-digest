@@ -1,10 +1,14 @@
 """GitHub 트렌딩 레포 브리핑 — 매일 08:00 PST 이메일 발송."""
 import os
 import sys
+import time
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+_MAX_RETRIES = 3
+_RETRY_DELAY = 5  # seconds
 
 # 프로젝트 루트를 import 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
@@ -14,11 +18,23 @@ from shared.email_sender import send_html_email
 
 
 def fetch_data() -> list[dict]:
-    """GitHub Trending 페이지에서 오늘의 트렌딩 레포를 스크래핑합니다."""
+    """GitHub Trending 페이지에서 오늘의 트렌딩 레포를 스크래핑합니다. 실패 시 최대 3회 재시도합니다."""
     url = "https://github.com/trending"
     headers = {"User-Agent": "Mozilla/5.0 (compatible; news-digest-bot/1.0)"}
-    response = requests.get(url, headers=headers, timeout=15)
-    response.raise_for_status()
+
+    last_error = None
+    for attempt in range(1, _MAX_RETRIES + 1):
+        try:
+            response = requests.get(url, headers=headers, timeout=15)
+            response.raise_for_status()
+            break
+        except Exception as e:
+            last_error = e
+            print(f"⚠️  GitHub Trending 요청 오류 (시도 {attempt}/{_MAX_RETRIES}): {e}")
+            if attempt < _MAX_RETRIES:
+                time.sleep(_RETRY_DELAY)
+    else:
+        raise RuntimeError(f"GitHub Trending 수집 {_MAX_RETRIES}회 모두 실패: {last_error}")
 
     soup = BeautifulSoup(response.text, "html.parser")
     repos = []
