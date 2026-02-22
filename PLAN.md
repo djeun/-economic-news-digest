@@ -29,10 +29,7 @@
 
 ## Phase 2 — 자동화 job 추가
 
-- [ ] 환율 브리핑 (`jobs/exchange_rate/`)
-  - 원/달러, 원/엔, 원/유로 일일 환율 요약
-  - 무료 소스: exchangerate-api.com (무료 티어) 또는 Yahoo Finance RSS
-- [ ] 글로벌 테크 뉴스 브리핑 (`jobs/tech_news/`)
+- [x] 글로벌 테크 뉴스 브리핑 (`jobs/tech_news/`)
   - Hacker News Top Stories RSS 활용
 - [ ] GitHub 트렌딩 레포 요약 (`jobs/github_trending/`)
   - GitHub Trending 페이지 스크래핑

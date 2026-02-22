@@ -27,6 +27,10 @@ _현재 진행 중인 작업 없음_
   - `main.py` → `jobs/us_economic_news/main.py`
   - `daily_news.yml` → `.github/workflows/us_economic_news.yml`
   - `shared/rss_fetcher.py`, `shared/ai_client.py`, `shared/email_sender.py` 분리
+- [x] 글로벌 테크 뉴스 브리핑 (`jobs/tech_news/main.py`)
+  - RSS 피드 3개 (Hacker News, TechCrunch, The Verge) 수집
+  - Gemini 2.5 Flash로 한국어 요약 (개발자 포인트 섹션 포함)
+  - GitHub Actions 워크플로 작성 (`tech_news.yml`, 매일 08:00 KST)
 
 ---
 
@@ -37,7 +41,7 @@ PLAN.md Phase 1 남은 항목:
 1. **`requirements.txt` 최종 정리** — 현재 패키지 버전 고정
 
 이후 Phase 2 (새 job 추가):
-- 환율 브리핑, 테크 뉴스, GitHub 트렌딩
+- GitHub 트렌딩
 
 ---
 
@@ -54,3 +58,4 @@ _현재 없음_
 | 2026-02-21 | 프로젝트 초기 셋업. main.py, GitHub Actions, CLAUDE.md 완성 |
 | 2026-02-21 | PLAN.md / PROGRESS.md 도입 |
 | 2026-02-21 | 폴더 구조 리팩터링 완료. shared/ 분리, jobs/ 구조 적용 |
+| 2026-02-21 | 글로벌 테크 뉴스 브리핑 완료. jobs/tech_news/main.py + tech_news.yml 작성 |

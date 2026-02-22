@@ -42,7 +42,7 @@ GitHub Actions로 스케줄을 관리하고, 무료 서비스만 사용합니다
 
 | 역할 | 서비스 | 제한 |
 |------|--------|------|
-| AI 요약·생성 | Google Gemini 1.5 Flash | 1,500건/일, 15건/분 |
+| AI 요약·생성 | Google Gemini 2.5 Flash | 250건/일, 10건/분 |
 | 뉴스·데이터 수집 | RSS 피드 (CNBC, MarketWatch, Google News 등) | 제한 없음 |
 | 이메일 발송 | Gmail SMTP (앱 비밀번호) | 하루 500건 |
 | 스케줄 실행 | GitHub Actions | 월 2,000분 (private repo) |
@@ -180,7 +180,7 @@ jobs:
 ## 기술 스택
 
 - **언어**: Python 3.12
-- **AI**: `google-generativeai` (Gemini 1.5 Flash)
+- **AI**: `google-generativeai` (Gemini 2.5 Flash)
 - **RSS 파싱**: `feedparser`
 - **이메일**: `smtplib` (표준 라이브러리)
 - **HTTP**: `requests`
@@ -194,12 +194,12 @@ jobs:
 import google.generativeai as genai
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 response = model.generate_content(prompt)
 text = response.text
 ```
 
-- 모델은 항상 `gemini-1.5-flash` 사용 (무료 티어 한도 내)
+- 모델은 항상 `gemini-2.5-flash` 사용 (무료 티어 한도 내)
 - 프롬프트는 한국어로 작성, 출력도 한국어 요청
 - 하루 작업당 Gemini 호출은 1~2회로 유지
 
