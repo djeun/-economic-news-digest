@@ -12,19 +12,29 @@ jobs:
     outputs:
       should_run: ${{ steps.check.outputs.should_run }}
     steps:
-      - name: Check current PT hour
+      - name: Check if this cron matches current DST offset
         id: check
         run: |
-          PT_HOUR=$(TZ="America/Los_Angeles" date +"%H")
-          if [ "$PT_HOUR" = "08" ]; then
+          SCHEDULE="${{ github.event.schedule }}"
+          PT_OFFSET=$(TZ="America/Los_Angeles" date +"%z")
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Always run when triggered manually
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          elif [ "$SCHEDULE" = "0 15 * * *" ] && [ "$PT_OFFSET" = "-0700" ]; then
+            # PDT cron fired AND we are currently in PDT (summer) → run
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          elif [ "$SCHEDULE" = "0 16 * * *" ] && [ "$PT_OFFSET" = "-0800" ]; then
+            # PST cron fired AND we are currently in PST (winter) → run
             echo "should_run=true" >> $GITHUB_OUTPUT
           else
+            # Wrong cron for current season → skip (prevents double-send)
             echo "should_run=false" >> $GITHUB_OUTPUT
           fi
 
   send-briefing:
     needs: check-time
-    if: needs.check-time.outputs.should_run == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.check-time.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
