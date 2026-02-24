@@ -106,7 +106,7 @@ def notify(summary_html: str, articles: list[dict]) -> None:
 </body>
 </html>"""
 
-    send_html_email(f"[{mmdd}] 오늘의 미국 경제 뉴스 브리핑 🇺🇸", html)
+    send_html_email(f"{mmdd} 미국 경제 뉴스 🇺🇸", html)
 
 
 def main():

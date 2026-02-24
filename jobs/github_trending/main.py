@@ -165,7 +165,7 @@ def notify(summary_html: str, repos: list[dict]) -> None:
 </body>
 </html>"""
 
-    send_html_email(f"[{mmdd}] 오늘의 GitHub 트렌딩 브리핑 🐙", html)
+    send_html_email(f"{mmdd} GitHub 트렌딩 🐙", html)
 
 
 def main():
